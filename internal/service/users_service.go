@@ -1,11 +1,11 @@
 package service
 
 import (
+	"crypto/sha256"
 	"emoLog/internal/common/jwt"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
 	"emoLog/internal/model"
-	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"time"
@@ -161,7 +161,7 @@ func (s *userService) List(c *gin.Context, query dto.ListQuery) (dto.Result[dto.
 		return dto.ServiceFail[dto.List[dto.UserWithRole]](result.Error), result.Error
 	}
 	for _, user := range users {
-		var roleIds []int
+		var roleIds []uint64
 		var roleNames []string
 		for _, role := range user.Roles {
 			roleIds = append(roleIds, role.ID)

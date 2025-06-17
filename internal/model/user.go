@@ -5,8 +5,10 @@ import (
 )
 
 type User struct {
-	ID          int           `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID          uint64        `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string        `gorm:"type:varchar(30);not null" json:"name"`
+	PlusRecord  []*PlusRecord `gorm:"foreignKey:UserID;references:ID" json:"plusRecord"`
+	EmoRecords  []*EmotionLog `gorm:"foreignKey:UserID;references:ID" json:"emoRecords"`
 	Account     string        `gorm:"type:varchar(30);not null;uniqueIndex:idx_account_create_time,sort:asc" json:"account"`
 	CreateTime  time.Time     `gorm:"type:datetime(6);uniqueIndex:idx_account_create_time,sort:asc;index" json:"createTime"`
 	Password    *string       `gorm:"type:varchar(255);not null" json:"password,omitempty"`

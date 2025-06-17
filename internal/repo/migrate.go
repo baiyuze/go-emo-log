@@ -13,7 +13,11 @@ func Migrate(db *gorm.DB) {
 		&model.Role{},
 		&model.Permission{},
 		&model.Dict{},
-		&model.DictItem{}); err != nil {
+		&model.DictItem{},
+		&model.EmotionLog{},
+		&model.PlusRecord{},
+		&model.Resource{},
+	); err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
 }

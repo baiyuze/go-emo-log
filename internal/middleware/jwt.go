@@ -38,11 +38,11 @@ func Jwt(verifyToken bool) gin.HandlerFunc {
 				isPass = false
 			}
 			//如果token过期了，用refresh刷新token，refreshToken过期了，如果token没过期，刷新refreshToken
-			if err := jwt.VerifyValidByToken(c, logger, "refreshToken"); err != nil {
-				msg += ",refreshToken verify token failed,err:" + err.Error()
-				logger.Error("refreshToken verify token failed", zap.Error(err))
-				isPass = false
-			}
+			//if err := jwt.VerifyValidByToken(c, logger, "refreshToken"); err != nil {
+			//	msg += ",refreshToken verify token failed,err:" + err.Error()
+			//	logger.Error("refreshToken verify token failed", zap.Error(err))
+			//	isPass = false
+			//}
 			if isPass {
 				c.Next()
 			} else {

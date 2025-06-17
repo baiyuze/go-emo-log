@@ -84,7 +84,7 @@ func (s *permissionsService) List(
 }
 func (s *permissionsService) Update(c *gin.Context, id int, body *dto.ReqPermissions) error {
 	if err := s.db.Model(&model.Permission{
-		ID: id,
+		ID: uint64(id),
 	}).Updates(&model.Permission{
 		Name:        body.Name,
 		Description: body.Description,

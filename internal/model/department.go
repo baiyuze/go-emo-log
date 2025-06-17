@@ -5,7 +5,7 @@ import (
 )
 
 type Department struct {
-	ID          int       `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID          uint64    `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string    `gorm:"type:varchar(100);not null" json:"name"`
 	ParentID    int       `gorm:"default:0;index" json:"parent_id"`      // 上级部门 ID，0 表示根节点
 	Sort        int       `gorm:"default:0" json:"sort"`                 // 排序

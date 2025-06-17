@@ -11,8 +11,8 @@ import (
 func InitDB() (*gorm.DB, error) {
 
 	// dsn := "test:test123@tcp(192.168.1.1::3307)/test?charset=utf8mb4&parseTime=True&loc=Local"
-	SQL_URL := os.Getenv("SQL_URL")
-	dsn := SQL_URL
+	EMO_URL := os.Getenv("EMO_URL")
+	dsn := EMO_URL
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dsn,   // DSN data source name
 		DefaultStringSize:         256,   // string 类型字段的默认长度

@@ -47,11 +47,11 @@ type User struct {
 }
 
 type UserWithRole struct {
-	ID         int       `json:"id"`
+	ID         uint64    `json:"id"`
 	Name       string    `json:"name"`
 	Account    string    `json:"account"`
 	CreateTime time.Time `json:"createTime"`
 	UpdateTime time.Time `json:"updateTime"`
-	RoleIDs    []int     `json:"roleId"`
+	RoleIDs    []uint64  `json:"roleId"`
 	RoleNames  []string  `json:"roleName"`
 }

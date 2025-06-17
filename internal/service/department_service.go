@@ -79,7 +79,7 @@ func (s *departmentService) Tree(
 	context *gin.Context,
 ) ([]*model.Department, error) {
 	var tree []*model.Department
-	var nodeMap = make(map[int]*model.Department)
+	var nodeMap = make(map[uint64]*model.Department)
 	var departments []model.Department
 	if err := s.db.Preload("Users", func(db *gorm.DB) *gorm.DB {
 		return db.Select("users.name", "users.id", "users.email", "users.phone", "users.create_time", "users.update_time")
@@ -99,7 +99,7 @@ func (s *departmentService) Tree(
 		if parentId == 0 {
 			tree = append(tree, node)
 		} else {
-			parentNode := nodeMap[parentId]
+			parentNode := nodeMap[uint64(parentId)]
 			parentNode.Children = append(parentNode.Children, node)
 
 		}
@@ -110,7 +110,7 @@ func (s *departmentService) Tree(
 func (s *departmentService) Update(c *gin.Context, id int, body *dto.DepartmentBody) error {
 
 	if err := s.db.Model(&model.Department{
-		ID: id,
+		ID: uint64(id),
 	}).Updates(&model.Department{
 		Name:        body.Name,
 		Description: body.Description,
