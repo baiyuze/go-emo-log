@@ -259,6 +259,33 @@ definitions:
         description: 数据值，系统用的
         type: string
     type: object
+  model.EmotionLog:
+    properties:
+      audios:
+        items:
+          $ref: '#/definitions/model.Resource'
+        type: array
+      context:
+        type: string
+      createTime:
+        type: string
+      deviceId:
+        type: string
+      emo:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/model.Resource'
+        type: array
+      title:
+        type: string
+      updateTime:
+        type: string
+      userId:
+        type: integer
+    type: object
   model.Permission:
     properties:
       createTime:
@@ -274,6 +301,43 @@ definitions:
           $ref: '#/definitions/model.Role'
         type: array
       updateTime:
+        type: string
+    type: object
+  model.PlusRecord:
+    properties:
+      createTime:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: integer
+      level:
+        type: integer
+      startTime:
+        type: string
+      updateTime:
+        type: string
+      userId:
+        description: 需要关联用户
+        type: integer
+    type: object
+  model.Resource:
+    properties:
+      createTime:
+        type: string
+      emoId:
+        description: 对应 emotion_log_id
+        type: integer
+      id:
+        type: integer
+      text:
+        type: string
+      type:
+        description: '"image" or "audio"'
+        type: string
+      updateTime:
+        type: string
+      url:
         type: string
     type: object
   model.Role:
@@ -309,6 +373,10 @@ definitions:
         type: array
       email:
         type: string
+      emoRecords:
+        items:
+          $ref: '#/definitions/model.EmotionLog'
+        type: array
       id:
         type: integer
       name:
@@ -317,6 +385,10 @@ definitions:
         type: string
       phone:
         type: string
+      plusRecord:
+        items:
+          $ref: '#/definitions/model.PlusRecord'
+        type: array
       roles:
         items:
           $ref: '#/definitions/model.Role'
@@ -484,6 +556,63 @@ paths:
       summary: 更新
       tags:
       - 字典管理
+  /api/emotions:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: emo 删除数据
+      tags:
+      - emo数据管理
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: emo 更新emo数据
+      tags:
+      - emo数据管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: emo 创建数据
+      tags:
+      - emo数据管理
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: emo 更新数据
+      tags:
+      - emo数据管理
   /api/permissions:
     delete:
       consumes:

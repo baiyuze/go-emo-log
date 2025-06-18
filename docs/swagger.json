@@ -249,6 +249,92 @@
                 }
             }
         },
+        "/api/emotions": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "emo数据管理"
+                ],
+                "summary": "emo 更新emo数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "emo数据管理"
+                ],
+                "summary": "emo 更新数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "emo数据管理"
+                ],
+                "summary": "emo 创建数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "emo数据管理"
+                ],
+                "summary": "emo 删除数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/permissions": {
             "get": {
                 "consumes": [
@@ -1049,6 +1135,47 @@
                 }
             }
         },
+        "model.EmotionLog": {
+            "type": "object",
+            "properties": {
+                "audios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Resource"
+                    }
+                },
+                "context": {
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "deviceId": {
+                    "type": "string"
+                },
+                "emo": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Resource"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.Permission": {
             "type": "object",
             "properties": {
@@ -1071,6 +1198,61 @@
                     }
                 },
                 "updateTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PlusRecord": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "需要关联用户",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Resource": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "emoId": {
+                    "description": "对应 emotion_log_id",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "\"image\" or \"audio\"",
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }
@@ -1125,6 +1307,12 @@
                 "email": {
                     "type": "string"
                 },
+                "emoRecords": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.EmotionLog"
+                    }
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -1136,6 +1324,12 @@
                 },
                 "phone": {
                     "type": "string"
+                },
+                "plusRecord": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PlusRecord"
+                    }
                 },
                 "roles": {
                     "type": "array",

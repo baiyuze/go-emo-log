@@ -8,5 +8,5 @@ func Provide(container *dig.Container) {
 	ProvidePermissionsService(container)
 	ProvideDepartmentService(container)
 	ProvideDictService(container)
-	
+	ProvideEmoService(container)
 }

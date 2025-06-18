@@ -31,12 +31,12 @@ func RegisterToConsul() {
 	client, _ := api.NewClient(config)
 
 	reg := &api.AgentServiceRegistration{
-		ID:      "user-service",
-		Name:    "user-service",
-		Port:    50051,
+		ID:      "emo-service",
+		Name:    "emo-service",
+		Port:    50052,
 		Address: ip,
 		Check: &api.AgentServiceCheck{
-			GRPC:     ip + ":50051",
+			GRPC:     ip + ":50052",
 			Interval: "10s",
 		},
 	}

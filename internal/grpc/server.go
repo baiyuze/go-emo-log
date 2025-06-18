@@ -14,7 +14,7 @@ import (
 
 func IntServer(container *dig.Container) {
 	go RegisterToConsul()
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", ":50052")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -23,7 +23,7 @@ func IntServer(container *dig.Container) {
 	healthServer := health.NewServer()
 	grpc_health_v1.RegisterHealthServer(s, healthServer)
 	ctr.InitContanier(s, container)
-	fmt.Println("Server listening on :50051")
+	fmt.Println("Server listening on :50052")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
