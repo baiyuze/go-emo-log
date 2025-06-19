@@ -1,11 +1,15 @@
 package handler
 
 import (
+	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
+	"emoLog/internal/dto"
 	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
+	"net/http"
+	"strconv"
 )
 
 type EmoHandler struct {
@@ -40,6 +44,17 @@ func ProviderEmoHandler(container *dig.Container) {
 // @Router /api/emotions [post]
 func (h *EmoHandler) Create(c *gin.Context) {
 
+	var body dto.EmotionLog
+	if err := c.ShouldBindJSON(&body); err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+
+	if err := h.service.Create(c, &body); err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, dto.Ok[any](nil))
 }
 
 // List emo 获取emo数据
@@ -49,7 +64,8 @@ func (h *EmoHandler) Create(c *gin.Context) {
 // @Param data body model.Dict true "body"
 // @Router /api/emotions [get]
 func (h *EmoHandler) List(c *gin.Context) {
-
+	c.JSON(http.StatusOK, dto.Ok[any](nil))
+	return
 }
 
 // Update emo 更新数据
@@ -57,8 +73,28 @@ func (h *EmoHandler) List(c *gin.Context) {
 // @Tags emo数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/emotions [put]
+// @Router /api/emotions/{id} [put]
 func (h *EmoHandler) Update(c *gin.Context) {
+	queryId := c.Param("id")
+	var body dto.EmotionLog
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+	
+	id, err := strconv.ParseUint(queryId, 10, 64)
+	if err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+
+	if err := h.service.Update(c, id, &body); err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.Ok[any](nil))
 
 }
 

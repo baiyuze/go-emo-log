@@ -2,14 +2,18 @@ package service
 
 import (
 	"emoLog/internal/common/log"
+	"emoLog/internal/dto"
 	"emoLog/internal/model"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 	"gorm.io/gorm"
+	"time"
 )
 
 type EmoService interface {
-	Create(c *gin.Context, body *model.Dict) error
+	Create(c *gin.Context, body *dto.EmotionLog) error
+	Update(c *gin.Context, id uint64, body *dto.EmotionLog) error
 	//Delete(c *gin.Context, body dto.DeleteIds) error
 	//List(context *gin.Context, query dto.ListQuery, name string) (dto.Result[dto.List[model.Dict]], error)
 	//Update(c *gin.Context, id int, body *model.Dict) error
@@ -34,6 +38,41 @@ func ProvideEmoService(container *dig.Container) {
 	}
 }
 
-func (s *emoService) Create(c *gin.Context, body *model.Dict) error {
+func (s *emoService) Create(c *gin.Context, body *dto.EmotionLog) error {
+	layout := "2006-01-02 15:04:05"
+	date, err := time.Parse(layout, body.Date)
+	if err != nil {
+		return fmt.Errorf("日期格式错误: %w", err)
+	}
+	data := model.EmotionLog{
+		Title:   body.Title,
+		Content: body.Content,
+		UserID:  body.UserID,
+		Date:    date,
+		Emo:     body.Emo,
+	}
+	if err := s.db.Create(&data).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *emoService) Update(c *gin.Context, id uint64, body *dto.EmotionLog) error {
+	layout := "2006-01-02 15:04:05"
+	date, err := time.Parse(layout, body.Date)
+	if err != nil {
+		return fmt.Errorf("日期格式错误: %w", err)
+	}
+	data := model.EmotionLog{
+		Title:   body.Title,
+		Content: body.Content,
+		Date:    date,
+		Emo:     body.Emo,
+	}
+	if err := s.db.Model(&model.EmotionLog{
+		ID: id,
+	}).Updates(&data).Error; err != nil {
+		return err
+	}
 	return nil
 }

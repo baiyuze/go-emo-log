@@ -12,12 +12,12 @@ import (
 // RegisterEmoRoutes 注册所有路由
 func RegisterEmoRoutes(r *gin.RouterGroup, container *dig.Container) {
 
-	router := r.Group("emo")
+	router := r.Group("emotions")
 	err := container.Invoke(func(emoHandler *handler.EmoHandler) {
 		// 创建
 		router.POST("/", middleware.Jwt(true), emoHandler.Create)
 		// 更新
-		router.PUT("/", middleware.Jwt(true), emoHandler.Update)
+		router.PUT("/:id", middleware.Jwt(true), emoHandler.Update)
 		// 删除
 		router.DELETE("/", middleware.Jwt(true), emoHandler.Delete)
 		// emotions 数据
