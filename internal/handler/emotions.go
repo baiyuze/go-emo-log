@@ -6,6 +6,8 @@ import (
 	"emoLog/internal/dto"
 	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
+	"emoLog/utils"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 	"net/http"
@@ -64,7 +66,26 @@ func (h *EmoHandler) Create(c *gin.Context) {
 // @Param data body model.Dict true "body"
 // @Router /api/emotions [get]
 func (h *EmoHandler) List(c *gin.Context) {
-	c.JSON(http.StatusOK, dto.Ok[any](nil))
+	pageNum := c.Query("pageNum")
+	pageSize := c.Query("pageSize")
+	userId := c.Query("userId")
+
+	if len(userId) == 0 {
+		errs.FailWithJSON(c, errors.New("userId不能为空"))
+		return
+	}
+
+	id, err := strconv.ParseUint(userId, 10, 64)
+	if err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize), id)
+	if err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, dto.Ok(result.Data))
 	return
 }
 
@@ -82,7 +103,7 @@ func (h *EmoHandler) Update(c *gin.Context) {
 		errs.FailWithJSON(c, err)
 		return
 	}
-	
+
 	id, err := strconv.ParseUint(queryId, 10, 64)
 	if err != nil {
 		errs.FailWithJSON(c, err)
@@ -105,5 +126,15 @@ func (h *EmoHandler) Update(c *gin.Context) {
 // @Param data body model.Dict true "body"
 // @Router /api/emotions [delete]
 func (h *EmoHandler) Delete(c *gin.Context) {
+	var body dto.DeleteIds
+	if err := c.ShouldBindJSON(&body); err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
 
+	if err := h.service.Delete(c, body); err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, dto.Ok[any](nil))
 }
