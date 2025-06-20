@@ -82,7 +82,7 @@ func (h *EmoHandler) Update(c *gin.Context) {
 		errs.FailWithJSON(c, err)
 		return
 	}
-	
+
 	id, err := strconv.ParseUint(queryId, 10, 64)
 	if err != nil {
 		errs.FailWithJSON(c, err)
