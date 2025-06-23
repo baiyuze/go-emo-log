@@ -265,9 +265,11 @@ definitions:
         items:
           $ref: '#/definitions/model.Resource'
         type: array
-      context:
+      content:
         type: string
       createTime:
+        type: string
+      date:
         type: string
       deviceId:
         type: string
@@ -279,6 +281,8 @@ definitions:
         items:
           $ref: '#/definitions/model.Resource'
         type: array
+      isBackUp:
+        type: integer
       title:
         type: string
       updateTime:
@@ -599,6 +603,7 @@ paths:
       summary: emo 创建数据
       tags:
       - emo数据管理
+  /api/emotions/{id}:
     put:
       consumes:
       - application/json
@@ -877,4 +882,104 @@ paths:
       summary: 注册
       tags:
       - 用户模块
+  /api/version:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除ids
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteIds'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response-any'
+      summary: 删除
+      tags:
+      - 版本管理
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 字典名称
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response-dto_List-array_model_Dict'
+      summary: 查询字典列表
+      tags:
+      - 版本管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response-any'
+      summary: 创建
+      tags:
+      - 版本管理
+  /api/version/{code}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典编码
+        in: query
+        name: code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response-array_model_DictItem'
+      summary: 根据Code获取options
+      tags:
+      - 版本管理
+  /api/version/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response-any'
+      summary: 更新
+      tags:
+      - 版本管理
 swagger: "2.0"

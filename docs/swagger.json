@@ -271,27 +271,6 @@
                 ],
                 "responses": {}
             },
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "emo数据管理"
-                ],
-                "summary": "emo 更新数据",
-                "parameters": [
-                    {
-                        "description": "body",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Dict"
-                        }
-                    }
-                ],
-                "responses": {}
-            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -321,6 +300,29 @@
                     "emo数据管理"
                 ],
                 "summary": "emo 删除数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/emotions/{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "emo数据管理"
+                ],
+                "summary": "emo 更新数据",
                 "parameters": [
                     {
                         "description": "body",
@@ -741,6 +743,162 @@
                     }
                 }
             }
+        },
+        "/api/version": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "版本管理"
+                ],
+                "summary": "查询字典列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "字典名称",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response-dto_List-array_model_Dict"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "版本管理"
+                ],
+                "summary": "创建",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "版本管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "description": "删除ids",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteIds"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/version/{code}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "版本管理"
+                ],
+                "summary": "根据Code获取options",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "字典编码",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response-array_model_DictItem"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/version/{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "版本管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response-any"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1144,10 +1302,13 @@
                         "$ref": "#/definitions/model.Resource"
                     }
                 },
-                "context": {
+                "content": {
                     "type": "string"
                 },
                 "createTime": {
+                    "type": "string"
+                },
+                "date": {
                     "type": "string"
                 },
                 "deviceId": {
@@ -1164,6 +1325,9 @@
                     "items": {
                         "$ref": "#/definitions/model.Resource"
                     }
+                },
+                "isBackUp": {
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"

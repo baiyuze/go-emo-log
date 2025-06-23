@@ -9,4 +9,5 @@ func Provide(container *dig.Container) {
 	ProvideDepartmentService(container)
 	ProvideDictService(container)
 	ProvideEmoService(container)
+	ProvideVersionService(container)
 }
