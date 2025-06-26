@@ -8,6 +8,7 @@ import (
 	"emoLog/internal/model"
 	"emoLog/internal/service"
 	"emoLog/utils"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 	"net/http"
@@ -15,13 +16,13 @@ import (
 )
 
 type VersionHandler struct {
-	service service.DictService
+	service service.VersionService
 	log     *log.LoggerWithContext
 	clients *container.Clients
 }
 
 func NewVersionHandler(
-	s service.DictService,
+	s service.VersionService,
 	l *log.LoggerWithContext,
 	clients *container.Clients,
 ) *VersionHandler {
@@ -38,32 +39,39 @@ func ProviderVersionHandler(container *dig.Container) {
 	}
 }
 
-// Create 创建
-// @Summary 创建
-// @Tags 版本管理
-// @Accept  json
-// @Param data body model.Dict true "body"
-// @Success 200  {object} dto.Response[any]
-// @Router /api/version [post]
 func (h *VersionHandler) Create(c *gin.Context) {
-	var body *model.Dict
+	var body model.Version
 	if err := c.ShouldBindJSON(&body); err != nil {
 		errs.FailWithJSON(c, err)
 		return
 	}
-	if len(body.Name) == 0 {
-		errs.FailWithJSON(c, errs.New("name不能为空"))
-		return
-	}
-	if len(body.Code) == 0 {
-		errs.FailWithJSON(c, errs.New("code不能为空"))
-		return
-	}
-	if err := h.service.Create(c, body); err != nil {
+
+	if err := h.service.Create(c, &body); err != nil {
 		errs.FailWithJSON(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, dto.Ok[any](nil))
+}
+
+// CheckUpdate 校验版本
+// @Summary 校验版本
+// @Tags 版本管理
+// @Accept  json
+// @Param data body model.Version true "body"
+// @Success 200  {object} dto.Response[bool]
+// @Router /api/versions/{versionName} [get]
+func (h *VersionHandler) CheckUpdate(c *gin.Context) {
+	versionName := c.Param("versionName")
+	if len(versionName) == 0 {
+		errs.FailWithJSON(c, errors.New("版本号不能为空"))
+		return
+	}
+	version, err := h.service.CheckUpdate(c, versionName)
+	if err != nil {
+		errs.FailWithJSON(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, dto.Ok(version))
 }
 
 // Update 更新
@@ -72,33 +80,24 @@ func (h *VersionHandler) Create(c *gin.Context) {
 // @Accept  json
 // @Param data body model.Dict true "body"
 // @Success 200  {object} dto.Response[any]
-// @Router /api/version/{id} [put]
+// @Router /api/versions/{id} [put]
 func (h *VersionHandler) Update(c *gin.Context) {
-	var body *model.Dict
-	var dictId int
+	var body model.Version
+	var versionId uint64
 	id := c.Param("id")
 	if len(id) != 0 {
-		result, err := strconv.Atoi(id)
+		result, err := strconv.ParseUint(id, 10, 64)
 		if err != nil {
 			errs.FailWithJSON(c, err)
 			return
 		}
-		dictId = result
+		versionId = result
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
 		errs.FailWithJSON(c, err)
 		return
 	}
-	if len(body.Name) == 0 {
-		errs.FailWithJSON(c, errs.New("name不能为空"))
-		return
-	}
-	// 不许更新code，更新code就得更新关联关系
-	if len(body.Code) == 0 {
-		errs.FailWithJSON(c, errs.New("code不能为空"))
-		return
-	}
-	if err := h.service.Update(c, dictId, body); err != nil {
+	if err := h.service.Update(c, versionId, &body); err != nil {
 		errs.FailWithJSON(c, err)
 		return
 	}
@@ -106,44 +105,26 @@ func (h *VersionHandler) Update(c *gin.Context) {
 }
 
 // List 查询
-// @Summary 查询字典列表
-// @Tags 版本管理
+// @Summary 版本列表
+// @Tags 版本列表
 // @Accept json
 // @Produce json
 // @Param pageNum query int false "页码"
 // @Param pageSize query int false "每页数量"
-// @Param name query string false "字典名称"
+// @Param version query string false "版本名称"
 // @Success 200 {object} dto.Response[dto.List[[]model.Dict]]
-// @Router /api/version [get]
+// @Router /api/versions [get]
 func (h *VersionHandler) List(c *gin.Context) {
 	pageNum := c.Query("pageNum")
 	pageSize := c.Query("pageSize")
-	name := c.Query("name")
+	version := c.Query("version")
 
-	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize), name)
+	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize), version)
 	if err != nil {
 		errs.FailWithJSON(c, err)
 	} else {
 		c.JSON(http.StatusOK, dto.Ok(result.Data))
 	}
-}
-
-// GetOptions 根据Code获取options
-// @Summary 根据Code获取options
-// @Tags 版本管理
-// @Accept  json
-// @Param code query string true "字典编码"
-// @Success 200  {object} dto.Response[[]model.DictItem]
-// @Router /api/version/{code} [get]
-func (h *VersionHandler) GetOptions(c *gin.Context) {
-	code := c.Param("code")
-	dictItems, err := h.service.GetOptionsByDictCode(c, code)
-	if err != nil {
-		errs.FailWithJSON(c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, dto.Ok(dictItems))
 }
 
 // Delete 删除
@@ -152,7 +133,7 @@ func (h *VersionHandler) GetOptions(c *gin.Context) {
 // @Accept  json
 // @Param data body dto.DeleteIds true "删除ids"
 // @Success 200  {object} dto.Response[any]
-// @Router /api/version [delete]
+// @Router /api/versions [delete]
 func (h *VersionHandler) Delete(c *gin.Context) {
 	var ids dto.DeleteIds
 	if err := c.ShouldBindJSON(&ids); err != nil {

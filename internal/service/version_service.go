@@ -4,17 +4,18 @@ import (
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
 	"emoLog/internal/model"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 	"gorm.io/gorm"
 )
 
 type VersionService interface {
-	Create(c *gin.Context, body *model.Dict) error
+	CheckUpdate(c *gin.Context, versionName string) (model.Version, error)
+	Create(c *gin.Context, body *model.Version) error
 	Delete(c *gin.Context, body dto.DeleteIds) error
-	List(context *gin.Context, query dto.ListQuery, name string) (dto.Result[dto.List[model.Dict]], error)
-	Update(c *gin.Context, id int, body *model.Dict) error
-	GetOptionsByDictCode(c *gin.Context, code string) ([]*model.DictItem, error)
+	List(context *gin.Context, query dto.ListQuery, versionName string) (dto.Result[dto.List[model.Version]], error)
+	Update(c *gin.Context, id uint64, body *model.Version) error
 }
 
 type versionService struct {
@@ -35,62 +36,59 @@ func ProvideVersionService(container *dig.Container) {
 	}
 }
 
-// Create 创建
-func (s *versionService) Create(c *gin.Context, body *model.Dict) error {
-	if err := s.db.Transaction(func(tx *gorm.DB) error {
-		// 添加数据到dict
-		if err := tx.Create(&model.Dict{
-			Name:        body.Name,
-			Code:        body.Code,
-			En:          body.En,
-			Description: body.Description,
-		}).Error; err != nil {
-			return err
-		}
-		// 添加数据到dict_items
-		for _, item := range body.Items {
-			if err := tx.Create(&model.DictItem{
-				DictCode: body.Code,
-				Value:    item.Value,
-				LabelZh:  item.LabelZh,
-				LabelEn:  item.LabelEn,
-				Status:   item.Status,
-			}).Error; err != nil {
-				return err
-			}
-		}
+// CheckUpdate 检查更新
+func (s *versionService) CheckUpdate(c *gin.Context, versionName string) (model.Version, error) {
+	var versionItem model.Version
+	if err := s.db.Order("create_time desc").First(&versionItem).Error; err != nil {
+		return model.Version{}, err
+	}
 
-		return nil
-	}); err != nil {
+	if versionName != versionItem.Version {
+		return versionItem, nil
+	} else {
+		return model.Version{}, errors.New("当前已经是最新版本")
+	}
+}
+
+// Create 创建版本
+func (s *versionService) Create(c *gin.Context, body *model.Version) error {
+	if err := s.db.Create(&model.Version{
+		Version:     body.Version,
+		Description: body.Description,
+	}).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // List 根据不同的code获取不同的options
-func (s *versionService) List(c *gin.Context, query dto.ListQuery, name string) (dto.Result[dto.List[model.Dict]], error) {
+func (s *versionService) List(c *gin.Context, query dto.ListQuery, versionName string) (dto.Result[dto.List[model.Version]], error) {
 	logger := s.log.WithContext(c)
-	var dicts []model.Dict
+	var versions []model.Version
+	db := s.db
+
 	limit := query.PageSize
 	offset := query.PageNum*query.PageSize - query.PageSize
 
-	if result := s.db.
-		Where("name LIKE ?", "%"+name+"%").
-		Preload("Items").
+	if len(versionName) != 0 {
+		db = s.db.Where("version LIKE ?", "%"+versionName+"%")
+	}
+	if result := db.
 		Limit(limit).
 		Offset(offset).
-		Order("create_time asc").
-		Find(&dicts); result.Error != nil {
+		Order("create_time desc").
+		Find(&versions); result.Error != nil {
 		logger.Error(result.Error.Error())
-		return dto.ServiceFail[dto.List[model.Dict]](result.Error), result.Error
+		return dto.ServiceFail[dto.List[model.Version]](result.Error), result.Error
 	}
 	var count int64
-	if result := s.db.Model(&model.Dict{}).Count(&count); result.Error != nil {
+	if result := s.db.Model(&model.Version{}).Count(&count); result.Error != nil {
 		logger.Error(result.Error.Error())
-		return dto.ServiceFail[dto.List[model.Dict]](result.Error), result.Error
+		return dto.ServiceFail[dto.List[model.Version]](result.Error), result.Error
 	}
-	data := dto.ServiceSuccess(dto.List[model.Dict]{
-		Items:    dicts,
+	data := dto.ServiceSuccess(dto.List[model.Version]{
+		Items:    versions,
 		PageSize: query.PageSize,
 		PageNum:  query.PageNum,
 		Total:    count,
@@ -98,87 +96,22 @@ func (s *versionService) List(c *gin.Context, query dto.ListQuery, name string) 
 	return data, nil
 }
 
-// GetOptionsByDictCode 根据不同的code获取不同的options
-func (s *versionService) GetOptionsByDictCode(c *gin.Context, code string) ([]*model.DictItem, error) {
-	var dictItems []*model.DictItem
-	if err := s.db.Where("dict_code = ?", code).Find(&dictItems).Error; err != nil {
-		return nil, err
-	}
-
-	return dictItems, nil
-}
-
-// Delete 删除
-func (s *versionService) Delete(c *gin.Context, body dto.DeleteIds) error {
-	var dicts []model.Dict
-	if err := s.db.Preload("Items").Find(&dicts, body.Ids).Error; err != nil {
+// Update 更新字典数据,需要使用事务
+func (s *versionService) Update(c *gin.Context, id uint64, body *model.Version) error {
+	if err :=
+		s.db.Model(&model.Version{
+			ID: id,
+		}).Updates(model.Version{
+			Version:     body.Version,
+			Description: body.Description,
+		}).Error; err != nil {
 		return err
 	}
-	// 如果想删除主表记录同步删除从表记录，需要设置constraint:OnDelete:CASCADE
-	// 当前采用先删除从表，再删除主表记录
-	for _, dict := range dicts {
-		for _, item := range dict.Items {
-			if err := s.db.Delete(&item).Error; err != nil {
-				return err
-			}
-		}
-		if err := s.db.Delete(&dict).Error; err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 
-// Update 更新字典数据,需要使用事务
-func (s *versionService) Update(c *gin.Context, id int, body *model.Dict) error {
-	err := s.db.Transaction(func(tx *gorm.DB) error {
-		var dict model.Dict
-		if err := tx.First(&dict, id).Error; err != nil {
-			return err
-		}
-		//更新关系，先清空再更新
-		// 不允许clear是因为外键不能为null导致的
-		//if err := tx.Model(&dict).Association("Items").Clear(); err != nil {
-		//	return err
-		//}
-		//	先更新id数据，再更新关联关系
-		if err :=
-			tx.Model(&dict).Updates(model.Dict{
-				Name:        body.Name,
-				En:          body.En,
-				Code:        body.Code,
-				Description: body.Description,
-			}).Error; err != nil {
-			return nil
-		}
-
-		if body.Items != nil {
-			for _, item := range body.Items {
-				dictItems := model.DictItem{
-					DictCode: body.Code,
-					Value:    item.Value,
-					LabelZh:  item.LabelZh,
-					LabelEn:  item.LabelEn,
-					Status:   item.Status,
-				}
-				if item.ID != 0 {
-					if err := tx.Model(&model.DictItem{
-						ID: item.ID,
-					}).Updates(&dictItems).Error; err != nil {
-						return err
-					}
-				} else {
-					if err := tx.Create(&dictItems).Error; err != nil {
-						return err
-					}
-				}
-			}
-		}
-
-		return nil
-	})
-	if err != nil {
+func (s *versionService) Delete(c *gin.Context, body dto.DeleteIds) error {
+	if err := s.db.Delete(&model.Version{}, body.Ids).Error; err != nil {
 		return err
 	}
 	return nil
