@@ -62,7 +62,7 @@ func (s *versionService) Create(c *gin.Context, body *model.Version) error {
 	return nil
 }
 
-// List 根据不同的code获取不同的options
+// List 列表
 func (s *versionService) List(c *gin.Context, query dto.ListQuery, versionName string) (dto.Result[dto.List[model.Version]], error) {
 	logger := s.log.WithContext(c)
 	var versions []model.Version
