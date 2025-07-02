@@ -4,7 +4,6 @@ import (
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
 	"emoLog/internal/model"
-	"errors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 	"gorm.io/gorm"
@@ -46,7 +45,7 @@ func (s *versionService) CheckUpdate(c *gin.Context, versionName string) (model.
 	if versionName != versionItem.Version {
 		return versionItem, nil
 	} else {
-		return model.Version{}, errors.New("当前已经是最新版本")
+		return model.Version{}, nil
 	}
 }
 

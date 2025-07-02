@@ -71,6 +71,10 @@ func (h *VersionHandler) CheckUpdate(c *gin.Context) {
 		errs.FailWithJSON(c, err)
 		return
 	}
+	if version.ID == 0 {
+		c.JSON(http.StatusOK, dto.Ok[any](nil))
+		return
+	}
 	c.JSON(http.StatusOK, dto.Ok(version))
 }
 
