@@ -15,38 +15,39 @@ import (
 	"go.uber.org/dig"
 )
 
-type EmoHandler struct {
-	service service.EmoService
+type FeedbackHandler struct {
+	service service.FeedbackService
 	log     *log.LoggerWithContext
 	clients *container.Clients
 }
 
-func NewEmoHandler(
-	s service.EmoService,
+func NewFeedbackHandlerHandler(
+	s service.FeedbackService,
 	l *log.LoggerWithContext,
 	clients *container.Clients,
-) *EmoHandler {
-	return &EmoHandler{
+) *FeedbackHandler {
+	return &FeedbackHandler{
 		service: s,
 		log:     l,
 		clients: clients,
 	}
 }
 
-func ProviderEmoHandler(container *dig.Container) {
-	if err := container.Provide(NewEmoHandler); err != nil {
+func ProviderFeedbackHandler(container *dig.Container) {
+	if err := container.Provide(NewFeedbackHandlerHandler); err != nil {
 		return
 	}
 }
 
-// Create emo 创建数据
-// @Summary emo 创建数据
-// @Tags emo数据管理
+// Create feedback 创建数据
+// @Summary feedback 创建数据
+// @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/emotions [post]
-func (h *EmoHandler) Create(c *gin.Context) {
-	var body dto.EmotionLog
+// @Router /api/feedbacks [post]
+func (h *FeedbackHandler) Create(c *gin.Context) {
+
+	var body dto.Feedback
 	if err := c.ShouldBindJSON(&body); err != nil {
 		errs.FailWithJSON(c, err)
 		return
@@ -59,13 +60,13 @@ func (h *EmoHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.Ok[any](nil))
 }
 
-// List emo 获取emo数据
-// @Summary emo 更新emo数据
-// @Tags emo数据管理
+// List feedback 获取emo数据
+// @Summary feedback 更新emo数据
+// @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/emotions [get]
-func (h *EmoHandler) List(c *gin.Context) {
+// @Router /api/feedbacks [get]
+func (h *FeedbackHandler) List(c *gin.Context) {
 	pageNum := c.Query("pageNum")
 	pageSize := c.Query("pageSize")
 	userId := c.Query("userId")
@@ -88,15 +89,15 @@ func (h *EmoHandler) List(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.Ok(result.Data))
 }
 
-// Update emo 更新数据
-// @Summary emo 更新数据
-// @Tags emo数据管理
+// Update feedback 更新数据
+// @Summary feedback 更新数据
+// @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/emotions/{id} [put]
-func (h *EmoHandler) Update(c *gin.Context) {
+// @Router /api/feedbacks/{id} [put]
+func (h *FeedbackHandler) Update(c *gin.Context) {
 	queryId := c.Param("id")
-	var body dto.EmotionLog
+	var body dto.Feedback
 
 	if err := c.ShouldBindJSON(&body); err != nil {
 		errs.FailWithJSON(c, err)
@@ -119,12 +120,12 @@ func (h *EmoHandler) Update(c *gin.Context) {
 }
 
 // Delete emo
-// @Summary emo 删除数据
-// @Tags emo数据管理
+// @Summary feedback 删除数据
+// @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/emotions [delete]
-func (h *EmoHandler) Delete(c *gin.Context) {
+// @Router /api/feedbacks [delete]
+func (h *FeedbackHandler) Delete(c *gin.Context) {
 	var body dto.DeleteIds
 	if err := c.ShouldBindJSON(&body); err != nil {
 		errs.FailWithJSON(c, err)

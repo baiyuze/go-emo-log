@@ -1,11 +1,12 @@
 package repo
 
 import (
+	"log"
+	"os"
+
 	"go.uber.org/dig"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
-	"os"
 )
 
 func InitDB() (*gorm.DB, error) {

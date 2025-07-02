@@ -8,8 +8,9 @@ import (
 	"emoLog/internal/middleware"
 	"emoLog/internal/router"
 	"fmt"
-	"go.uber.org/zap"
 	"os"
+
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 )

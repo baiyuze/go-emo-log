@@ -3,11 +3,12 @@ package router
 import (
 	_ "emoLog/docs"
 	"emoLog/internal/dto"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/dig"
-	"net/http"
 )
 
 // RegisterRoutes 注册所有路由
@@ -27,5 +28,6 @@ func RegisterRoutes(r *gin.Engine, container *dig.Container) {
 	RegisterDictRoutes(route, container)
 	RegisterEmoRoutes(route, container)
 	RegisterVersionRoutes(route, container)
+	RegisterFeedbackRoutes(route, container)
 
 }
