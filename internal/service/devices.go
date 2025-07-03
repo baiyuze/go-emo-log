@@ -38,8 +38,14 @@ func ProvideDevicesService(container *dig.Container) {
 func (s *devicesService) Create(c *gin.Context, body *model.Device) error {
 
 	data := model.Device{
-		//Description: body.Description,
-		//Version:     body.Version,
+		UserID:     body.UserID,
+		DeviceID:   body.DeviceID,
+		Platform:   body.Platform,
+		Brand:      body.Brand,
+		Model:      body.Model,
+		OSVersion:  body.OSVersion,
+		Resolution: body.Resolution,
+		AppVersion: body.AppVersion,
 	}
 	if err := s.db.Create(&data).Error; err != nil {
 		return err
@@ -50,8 +56,14 @@ func (s *devicesService) Create(c *gin.Context, body *model.Device) error {
 func (s *devicesService) Update(c *gin.Context, id uint64, body *model.Device) error {
 
 	data := model.Device{
-		//Description: body.Description,
-		//Version:     body.Version,
+		UserID:     body.UserID,
+		DeviceID:   body.DeviceID,
+		Platform:   body.Platform,
+		Brand:      body.Brand,
+		Model:      body.Model,
+		OSVersion:  body.OSVersion,
+		Resolution: body.Resolution,
+		AppVersion: body.AppVersion,
 	}
 	if err := s.db.Model(&model.Device{
 		ID: id,
@@ -72,7 +84,7 @@ func (s *devicesService) List(
 	context *gin.Context,
 	query dto.ListQuery,
 	userId uint64) (dto.Result[dto.List[model.Device]], error) {
-	var emotionLogs []model.Device
+	var devices []model.Device
 	limit := query.PageSize
 	offset := query.PageNum*query.PageSize - query.PageSize
 
@@ -82,7 +94,7 @@ func (s *devicesService) List(
 		Limit(limit).
 		Offset(offset).
 		Order("create_time asc").
-		Find(&emotionLogs); result.Error != nil {
+		Find(&devices); result.Error != nil {
 		return dto.ServiceFail[dto.List[model.Device]](result.Error), result.Error
 	}
 	var count int64
@@ -91,7 +103,7 @@ func (s *devicesService) List(
 	}
 
 	data := dto.ServiceSuccess(dto.List[model.Device]{
-		Items:    emotionLogs,
+		Items:    devices,
 		PageSize: query.PageSize,
 		PageNum:  query.PageNum,
 		Total:    count,

@@ -15,8 +15,8 @@ type Device struct {
 	OSVersion   string    `gorm:"type:varchar(32)" json:"osVersion,omitempty"`
 	Resolution  string    `gorm:"type:varchar(32)" json:"resolution,omitempty"`
 	AppVersion  string    `gorm:"type:varchar(16)" json:"appVersion,omitempty"`
-	CreatedTime time.Time `gorm:"type:datetime(6);autoCreateTime" json:"createdTime"`
-	UpdatedTime time.Time `gorm:"type:datetime(6);autoUpdateTime" json:"updatedTime"`
+	CreatedTime time.Time `gorm:"type:datetime(6);autoCreateTime" json:"createdTime,omitempty"`
+	UpdatedTime time.Time `gorm:"type:datetime(6);autoUpdateTime" json:"updatedTime,omitempty"`
 }
 
 func (Device) TableName() string {

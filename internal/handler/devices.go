@@ -5,6 +5,7 @@ import (
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
 	"emoLog/internal/grpc/container"
+	"emoLog/internal/model"
 	"emoLog/internal/service"
 	"emoLog/utils"
 	"errors"
@@ -47,7 +48,7 @@ func ProviderDevicesHandler(container *dig.Container) {
 // @Router /api/Devices [post]
 func (h *DevicesHandler) Create(c *gin.Context) {
 
-	var body dto.Feedback
+	var body model.Device
 	if err := c.ShouldBindJSON(&body); err != nil {
 		errs.FailWithJSON(c, err)
 		return
