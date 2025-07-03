@@ -6,6 +6,8 @@ import (
 
 type User struct {
 	ID          uint64        `gorm:"primaryKey;autoIncrement" json:"id"`
+	DeviceId    uint64        `gorm:"index" json:"deviceId"`
+	Device      uint64        `gorm:"foreignKey:UserId;references:ID" json:"device"`
 	Name        string        `gorm:"type:varchar(30);not null" json:"name"`
 	PlusRecord  []*PlusRecord `gorm:"foreignKey:UserID;references:ID" json:"plusRecord"`
 	EmoRecords  []*EmotionLog `gorm:"foreignKey:UserID;references:ID" json:"emoRecords"`

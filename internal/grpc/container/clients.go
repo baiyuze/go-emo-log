@@ -65,7 +65,7 @@ func newClient[T any](serverName string, constructor func(grpc.ClientConnInterfa
 }
 
 func InitClients() *Clients {
-	client, conn := newClient("user-service", pb.NewHelloServiceClient)
+	client, conn := newClient("emo-service", pb.NewHelloServiceClient)
 	return &Clients{
 		UserClient: client,
 		UserConn:   conn,

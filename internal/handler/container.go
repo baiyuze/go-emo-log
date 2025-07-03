@@ -12,4 +12,5 @@ func Provide(container *dig.Container) {
 	ProviderEmoHandler(container)
 	ProviderVersionHandler(container)
 	ProviderFeedbackHandler(container)
+	ProviderDevicesHandler(container)
 }
