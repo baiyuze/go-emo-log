@@ -98,7 +98,7 @@ func (h *DevicesHandler) List(c *gin.Context) {
 // @Router /api/Devices/{id} [put]
 func (h *DevicesHandler) Update(c *gin.Context) {
 	queryId := c.Param("id")
-	var body dto.Feedback
+	var body model.Device
 
 	if err := c.ShouldBindJSON(&body); err != nil {
 		errs.FailWithJSON(c, err)
