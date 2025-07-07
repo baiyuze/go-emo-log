@@ -47,7 +47,7 @@ func (s *emoService) Create(c *gin.Context, body *dto.EmotionLog) error {
 	data := model.EmotionLog{
 		Title:   body.Title,
 		Content: body.Content,
-		UserID:  body.UserID,
+		UserID:  &body.UserID,
 		Date:    date,
 		Emo:     body.Emo,
 	}
