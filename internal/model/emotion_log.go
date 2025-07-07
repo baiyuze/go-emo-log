@@ -6,7 +6,7 @@ type EmotionLog struct {
 	ID         uint64      `gorm:"primaryKey;autoIncrement" json:"id"`
 	Title      string      `gorm:"type:varchar(100);" json:"title"`
 	Content    string      `gorm:"type:text;not null" json:"content"`
-	UserID     uint64      `gorm:"not null;index" json:"userId"`
+	UserID     *uint64     `gorm:"not null;index" json:"userId,omitempty"`
 	Audios     []*Resource `gorm:"foreignKey:EmoId;constraint:OnDelete:CASCADE;" json:"audios"`
 	Images     []*Resource `gorm:"foreignKey:EmoId;constraint:OnDelete:CASCADE;" json:"images"`
 	Date       time.Time   `gorm:"type:datetime(6);" json:"date"`

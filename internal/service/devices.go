@@ -38,7 +38,6 @@ func ProvideDevicesService(container *dig.Container) {
 func (s *devicesService) Create(c *gin.Context, body *model.Device) error {
 
 	data := model.Device{
-		UserID:     body.UserID,
 		DeviceID:   body.DeviceID,
 		Platform:   body.Platform,
 		Brand:      body.Brand,

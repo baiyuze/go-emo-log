@@ -15,6 +15,94 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/Devices": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "Device 更新emo数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "Devices 创建数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "Device 删除数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/Devices/{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "Device 更新数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/department": {
             "get": {
                 "consumes": [
@@ -334,6 +422,94 @@ const docTemplate = `{
                     "emo数据管理"
                 ],
                 "summary": "emo 更新数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/feedbacks": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "feedback 更新emo数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "feedback 创建数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "feedback 删除数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/feedbacks/{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "feedback 更新数据",
                 "parameters": [
                     {
                         "description": "body",
@@ -755,7 +931,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/version": {
+        "/api/versions": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -764,9 +940,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "版本管理"
+                    "版本列表"
                 ],
-                "summary": "查询字典列表",
+                "summary": "版本列表",
                 "parameters": [
                     {
                         "type": "integer",
@@ -782,8 +958,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "字典名称",
-                        "name": "name",
+                        "description": "版本名称",
+                        "name": "version",
                         "in": "query"
                     }
                 ],
@@ -792,34 +968,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.Response-dto_List-array_model_Dict"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "版本管理"
-                ],
-                "summary": "创建",
-                "parameters": [
-                    {
-                        "description": "body",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Dict"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Response-any"
                         }
                     }
                 }
@@ -853,35 +1001,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/version/{code}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "版本管理"
-                ],
-                "summary": "根据Code获取options",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "字典编码",
-                        "name": "code",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Response-array_model_DictItem"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/version/{id}": {
+        "/api/versions/{id}": {
             "put": {
                 "consumes": [
                     "application/json"
@@ -906,6 +1026,36 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/versions/{versionName}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "版本管理"
+                ],
+                "summary": "校验版本",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Version"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response-bool"
                         }
                     }
                 }
@@ -1062,6 +1212,21 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.DictItem"
                     }
+                },
+                "err": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Response-bool": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "boolean"
                 },
                 "err": {},
                 "message": {
@@ -1351,6 +1516,29 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Feedback": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                },
+                "versionId": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Permission": {
             "type": "object",
             "properties": {
@@ -1479,6 +1667,12 @@ const docTemplate = `{
                         "$ref": "#/definitions/model.Department"
                     }
                 },
+                "device": {
+                    "type": "integer"
+                },
+                "deviceId": {
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1513,6 +1707,32 @@ const docTemplate = `{
                     }
                 },
                 "updateTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Version": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "feedbacks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Feedback"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }

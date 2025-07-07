@@ -101,6 +101,16 @@ definitions:
       message:
         type: string
     type: object
+  dto.Response-bool:
+    properties:
+      code:
+        type: integer
+      data:
+        type: boolean
+      err: {}
+      message:
+        type: string
+    type: object
   dto.Response-dto_List-array_model_Dict:
     properties:
       code:
@@ -290,6 +300,21 @@ definitions:
       userId:
         type: integer
     type: object
+  model.Feedback:
+    properties:
+      createTime:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      updateTime:
+        type: string
+      version:
+        type: string
+      versionId:
+        type: string
+    type: object
   model.Permission:
     properties:
       createTime:
@@ -375,6 +400,10 @@ definitions:
         items:
           $ref: '#/definitions/model.Department'
         type: array
+      device:
+        type: integer
+      deviceId:
+        type: integer
       email:
         type: string
       emoRecords:
@@ -400,9 +429,84 @@ definitions:
       updateTime:
         type: string
     type: object
+  model.Version:
+    properties:
+      createTime:
+        type: string
+      description:
+        type: string
+      feedbacks:
+        items:
+          $ref: '#/definitions/model.Feedback'
+        type: array
+      id:
+        type: integer
+      updateTime:
+        type: string
+      version:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
+  /api/Devices:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: Device 删除数据
+      tags:
+      - 反馈数据管理
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: Device 更新emo数据
+      tags:
+      - 反馈数据管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: Devices 创建数据
+      tags:
+      - 反馈数据管理
+  /api/Devices/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: Device 更新数据
+      tags:
+      - 反馈数据管理
   /api/department:
     delete:
       consumes:
@@ -618,6 +722,64 @@ paths:
       summary: emo 更新数据
       tags:
       - emo数据管理
+  /api/feedbacks:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: feedback 删除数据
+      tags:
+      - 反馈数据管理
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: feedback 更新emo数据
+      tags:
+      - 反馈数据管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: feedback 创建数据
+      tags:
+      - 反馈数据管理
+  /api/feedbacks/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: feedback 更新数据
+      tags:
+      - 反馈数据管理
   /api/permissions:
     delete:
       consumes:
@@ -882,7 +1044,7 @@ paths:
       summary: 注册
       tags:
       - 用户模块
-  /api/version:
+  /api/versions:
     delete:
       consumes:
       - application/json
@@ -913,9 +1075,9 @@ paths:
         in: query
         name: pageSize
         type: integer
-      - description: 字典名称
+      - description: 版本名称
         in: query
-        name: name
+        name: version
         type: string
       produces:
       - application/json
@@ -924,46 +1086,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.Response-dto_List-array_model_Dict'
-      summary: 查询字典列表
+      summary: 版本列表
       tags:
-      - 版本管理
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: body
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/model.Dict'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.Response-any'
-      summary: 创建
-      tags:
-      - 版本管理
-  /api/version/{code}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: 字典编码
-        in: query
-        name: code
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.Response-array_model_DictItem'
-      summary: 根据Code获取options
-      tags:
-      - 版本管理
-  /api/version/{id}:
+      - 版本列表
+  /api/versions/{id}:
     put:
       consumes:
       - application/json
@@ -980,6 +1106,25 @@ paths:
           schema:
             $ref: '#/definitions/dto.Response-any'
       summary: 更新
+      tags:
+      - 版本管理
+  /api/versions/{versionName}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Version'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response-bool'
+      summary: 校验版本
       tags:
       - 版本管理
 swagger: "2.0"

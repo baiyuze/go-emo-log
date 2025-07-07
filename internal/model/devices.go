@@ -6,8 +6,8 @@ import (
 
 type Device struct {
 	ID          uint64    `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID      uint64    `gorm:"index" json:"userId,omitempty"`
-	User        *User     `gorm:"foreignKey:UserID;references:ID" json:"user"`
+	UserID      *uint64   `gorm:"index" json:"userId,omitempty"`
+	User        *User     `gorm:"foreignKey:UserID;references:ID" json:"user,omitempty"`
 	DeviceID    string    `gorm:"type:varchar(64);not null;uniqueIndex" json:"deviceId"`
 	Platform    string    `gorm:"type:varchar(16)" json:"platform,omitempty"`
 	Brand       string    `gorm:"type:varchar(32)" json:"brand,omitempty"`

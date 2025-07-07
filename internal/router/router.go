@@ -29,5 +29,6 @@ func RegisterRoutes(r *gin.Engine, container *dig.Container) {
 	RegisterEmoRoutes(route, container)
 	RegisterVersionRoutes(route, container)
 	RegisterFeedbackRoutes(route, container)
+	RegisterDevicesRoutes(route, container)
 
 }
