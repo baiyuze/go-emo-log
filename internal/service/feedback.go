@@ -80,7 +80,6 @@ func (s *feedbackService) List(
 
 	if result := s.db.
 		Model(&model.Feedback{}).
-		Where("user_id = ?", userId).
 		Limit(limit).
 		Offset(offset).
 		Order("create_time asc").
