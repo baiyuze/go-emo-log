@@ -12,4 +12,5 @@ func Provide(container *dig.Container) {
 	ProvideVersionService(container)
 	ProvideFeedbackService(container)
 	ProvideDevicesService(container)
+	ProvideAiService(container)
 }

@@ -30,5 +30,6 @@ func RegisterRoutes(r *gin.Engine, container *dig.Container) {
 	RegisterVersionRoutes(route, container)
 	RegisterFeedbackRoutes(route, container)
 	RegisterDevicesRoutes(route, container)
+	RegisterAiRoutes(route, container)
 
 }

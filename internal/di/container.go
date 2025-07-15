@@ -2,6 +2,7 @@ package di
 
 import (
 	"emoLog/config"
+	"emoLog/internal/agent"
 	"emoLog/internal/common/log"
 	grpcContainer "emoLog/internal/grpc/container"
 	"emoLog/internal/handler"
@@ -33,6 +34,8 @@ func NewContainer() *dig.Container {
 	service.Provide(container)
 	// controller
 	handler.Provide(container)
+
+	agent.ProvideAi(container)
 
 	return container
 }

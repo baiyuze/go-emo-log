@@ -13,4 +13,5 @@ func Provide(container *dig.Container) {
 	ProviderVersionHandler(container)
 	ProviderFeedbackHandler(container)
 	ProviderDevicesHandler(container)
+	ProviderAiHandler(container)
 }
