@@ -7,23 +7,25 @@ import (
 	"strings"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/mozillazg/go-pinyin"
+	"github.com/henrylee2cn/pholcus/common/pinyin"
 )
 
+type Location struct {
+	Name string `json:"name"`
+	ID   string `json:"id"`
+}
+
+type CityLookupResponse struct {
+	Code     string     `json:"code"`
+	Location []Location `json:"location"`
+}
+
+var client = resty.New()
+
 func GetCurrentWeather(location string) (string, error) {
-	pinyinName := getCityPinyin(location)
-	// location, idErr :=
-	ids, err := getCityIDs(pinyinName)
-
-	if err != nil {
-		return "", err
-	}
-
-	fmt.Println(pinyinName, location, "---pinyinName----")
 	apiKey := os.Getenv("QWEATHER_API_KEY")
 
-	client := resty.New()
-	url := fmt.Sprintf("https://nt5n8kqhju.re.qweatherapi.com/v7/weather/now?location=%s", ids[0])
+	url := fmt.Sprintf("https://nt5n8kqhju.re.qweatherapi.com/v7/weather/now?location=%s", location)
 	fmt.Println(url)
 	resp, err := client.R().
 		SetHeader("X-QW-Api-Key", apiKey).
@@ -39,16 +41,7 @@ func GetCurrentWeather(location string) (string, error) {
 	return string(resp.Body()), nil
 }
 
-type CityLookupResponse struct {
-	Code     string `json:"code"`
-	Location []struct {
-		Name string `json:"name"`
-		ID   string `json:"id"`
-	} `json:"location"`
-}
-
-func getCityIDs(query string) ([]string, error) {
-	client := resty.New()
+func GetCityIDs(query string) ([]Location, error) {
 	apiKey := os.Getenv("QWEATHER_API_KEY")
 
 	resp, err := client.R().
@@ -72,22 +65,22 @@ func getCityIDs(query string) ([]string, error) {
 		return nil, fmt.Errorf("接口返回错误码: %s", cityResp.Code)
 	}
 
-	var ids []string
-	for _, loc := range cityResp.Location {
-		ids = append(ids, loc.ID)
-	}
-	fmt.Println(ids, "--城市ID---")
-	return ids, nil
+	// var ids []string
+	// for _, loc := range cityResp.Location {
+	// 	ids = append(ids, loc.ID)
+	// }
+	fmt.Printf("%+v===>", cityResp.Location)
+	return cityResp.Location, nil
 
 }
 
-func getCityPinyin(hans string) string {
-	p := pinyin.NewArgs()
-	vals := pinyin.Pinyin(hans, p)
+func GetCityPinyin(hans string) string {
+	vals := pinyin.Pinyin(hans, pinyin.Args{})
 	var build strings.Builder
 	for _, val := range vals {
 		build.WriteString(val[0])
 	}
 	nameStr := build.String()
+	fmt.Printf("%+v\n", vals)
 	return nameStr
 }

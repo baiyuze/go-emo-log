@@ -21,7 +21,7 @@ func RegisterAiRoutes(r *gin.RouterGroup, container *dig.Container) {
 		// 删除
 		router.DELETE("/chat", middleware.Jwt(true), aiHandler.Delete)
 		// feedback 数据
-		router.GET("/chat", middleware.Jwt(true), aiHandler.List)
+		router.GET("/chat", middleware.Jwt(true), aiHandler.Chat)
 	})
 	if err != nil {
 		fmt.Printf("注入 handler 失败: %v\n", err)

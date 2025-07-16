@@ -13,6 +13,7 @@ func ProvideAi(container *dig.Container) {
 
 	llm, err := openai.New(
 		openai.WithToken(apiKey),
+
 		openai.WithBaseURL("https://dashscope.aliyuncs.com/compatible-mode/v1"), // 注意带 /v1
 		openai.WithModel("deepseek-r1"),
 	)

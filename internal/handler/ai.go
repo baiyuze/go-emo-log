@@ -51,22 +51,7 @@ func ProviderAiHandler(container *dig.Container) {
 // @Param data body model.Dict true "body"
 // @Router /api/ai/chat{id} [put]
 func (h *AiHandler) Chat(c *gin.Context) {
-	// ctx := context.Background()
-	// completion, err := llms.GenerateFromSinglePrompt(ctx,
-	// 	h.llm,
-	// 	"今天天气如何？",
-	// 	llms.WithTemperature(0.8),
-	// 	llms.WithStopWords([]string{"Armstrong"}),
-	// )
-	// if err != nil {
-	// 	// log.Fatal(err)
-	// 	fmt.Println(err, "====")
-	// }
 
-	// fmt.Println("第一次---")
-	// fmt.Println(completion)
-
-	// resp, err := llm.GenerateContent(ctx, messageHistory, llms.WithTools(availableTools))
 	msg := c.Query("msg")
 	if len(msg) == 0 {
 		errs.FailWithJSON(c, errors.New("msg不能为空"))
