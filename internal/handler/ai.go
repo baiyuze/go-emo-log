@@ -51,13 +51,16 @@ func ProviderAiHandler(container *dig.Container) {
 // @Param data body model.Dict true "body"
 // @Router /api/ai/chat{id} [put]
 func (h *AiHandler) Chat(c *gin.Context) {
-
+	c.Writer.Header().Set("Content-Type", "text/event-stream")
+	c.Writer.Header().Set("Cache-Control", "no-cache")
+	c.Writer.Header().Set("Connection", "keep-alive")
 	msg := c.Query("msg")
 	if len(msg) == 0 {
 		errs.FailWithJSON(c, errors.New("msg不能为空"))
 	}
-	resp := h.service.TestChat(c, msg)
-	c.JSON(http.StatusOK, dto.Ok(resp))
+	h.service.TestChat(c, msg)
+	c.Abort()
+	//c.JSON(http.StatusOK, dto.Ok(resp))
 
 }
 

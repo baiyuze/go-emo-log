@@ -13,6 +13,7 @@ import (
 	"go.uber.org/dig"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"net/http"
 )
 
 type AiService interface {
@@ -46,6 +47,8 @@ func ProvideAiService(container *dig.Container) {
 	}
 }
 
+var ginContext *gin.Context
+
 // pushHistory 缓存ai记录
 func pushHistory(resp *llms.ContentResponse, messageHistory []llms.MessageContent) []llms.MessageContent {
 	assistantResponse := llms.TextParts(llms.ChatMessageTypeAI, resp.Choices[0].Content)
@@ -64,13 +67,13 @@ func executeToolCalls(
 		fmt.Println(err)
 	}
 	if len(resp.Choices[0].ToolCalls) > 0 {
-		messageHistory = tools.ExecuteToolCalls(ctx, llm, messageHistory, resp, logger)
+		messageHistory = tools.ExecuteToolCalls(messageHistory, resp, logger)
 		messageHistory = pushHistory(resp, messageHistory)
 
 		return executeToolCalls(ctx, llm, messageHistory, logger)
 	} else {
 		messageHistory = pushHistory(resp, messageHistory)
-		return resp, messageHistory
+		return executeToolStreamCalls(ctx, llm, messageHistory, logger)
 	}
 
 }
@@ -80,33 +83,36 @@ func executeToolStreamCalls(
 	llm *openai.LLM,
 	messageHistory []llms.MessageContent,
 	logger *zap.Logger) (*llms.ContentResponse, []llms.MessageContent) {
-	// var buffer bytes.Buffer
+	flusher, ok := ginContext.Writer.(http.Flusher)
+	if !ok {
+		ginContext.String(http.StatusInternalServerError, "Streaming not supported")
+		return nil, messageHistory
+	} // var buffer bytes.Buffer
 	resp, err := llm.GenerateContent(
 		ctx,
 		messageHistory,
 		llms.WithStreamingFunc(
 			func(ctx context.Context, chunk []byte) error {
-				// fmt.Printf("Received chunk: %s\n", chunk)
-				// if _, err := buffer.Write(chunk); err != nil {
-				// 	return err
-				// }
+				fmt.Printf("流式Received chunk: %s\n", chunk)
+				_, err := ginContext.Writer.Write(chunk)
+				if err != nil {
+					return err
+				}
+				flusher.Flush()
 				return nil
 			}), llms.WithTools(tools.AvailableTools))
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	// fmt.Println("查看啊啊啊啊啊啊: \n", resp.Choices[0].Content[0])
-	//dec := json.NewDecoder(strings.NewReader())
 	if resp == nil || len(resp.Choices) == 0 {
 		logger.Warn("empty response or unmarshal failed")
 		return resp, messageHistory
 	}
 	if len(resp.Choices[0].ToolCalls) > 0 {
-		messageHistory = tools.ExecuteToolCalls(ctx, llm, messageHistory, resp, logger)
+		messageHistory = tools.ExecuteToolCalls(messageHistory, resp, logger)
 		messageHistory = pushHistory(resp, messageHistory)
 
-		return executeToolStreamCalls(ctx, llm, messageHistory, logger)
+		return executeToolCalls(ctx, llm, messageHistory, logger)
 	} else {
 		messageHistory = pushHistory(resp, messageHistory)
 		return resp, messageHistory
@@ -136,6 +142,7 @@ func (s *aiService) TestChat(c *gin.Context, msg string) []*llms.ContentChoice {
 		`),
 		llms.TextParts(llms.ChatMessageTypeHuman, msg),
 	}
+	ginContext = c
 	resp, _ := executeToolCalls(ctx, s.llm, messageHistory, logger)
 
 	return resp.Choices

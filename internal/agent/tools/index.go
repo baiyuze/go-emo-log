@@ -1,7 +1,6 @@
 package tools
 
 import (
-	"context"
 	"encoding/json"
 	"strings"
 
@@ -64,16 +63,14 @@ var AvailableTools = []llms.Tool{
 }
 
 func ExecuteToolCalls(
-	ctx context.Context,
-	llm llms.Model,
 	messageHistory []llms.MessageContent,
 	resp *llms.ContentResponse,
 	logger *zap.Logger) []llms.MessageContent {
 
 	// 维护一个累积器
-	var currentToolName string
-	var currentToolID string
-	var argsBuilder strings.Builder
+	//var currentToolName string
+	//var currentToolID string
+	//var argsBuilder strings.Builder
 
 	for _, choice := range resp.Choices {
 		for _, toolCall := range choice.ToolCalls {
@@ -93,23 +90,23 @@ func ExecuteToolCalls(
 			}
 			messageHistory = append(messageHistory, assistantResponse)
 
-			// 如果 Function 名字为空，表示是上一个函数的 continuation
-			if toolCall.FunctionCall.Name != "" {
-				currentToolName = toolCall.FunctionCall.Name
-				currentToolID = toolCall.ID
-				argsBuilder.Reset()
-			}
-			argsBuilder.WriteString(toolCall.FunctionCall.Arguments)
+			//// 如果 Function 名字为空，表示是上一个函数的 continuation
+			//if toolCall.FunctionCall.Name != "" {
+			//	currentToolName = toolCall.FunctionCall.Name
+			//	currentToolID = toolCall.ID
+			//	argsBuilder.Reset()
+			//}
+			//argsBuilder.WriteString(toolCall.FunctionCall.Arguments)
 
 			// 当我们检测到 JSON 可能结束，才尝试 unmarshal
 			if strings.HasSuffix(toolCall.FunctionCall.Arguments, "}") {
-				argsJSON := argsBuilder.String()
-				switch currentToolName {
+				//argsJSON := argsBuilder.String()
+				switch toolCall.FunctionCall.Name {
 				case "GetCurrentWeather":
 					var args struct {
 						Location string `json:"location"`
 					}
-					if err := json.Unmarshal([]byte(argsJSON), &args); err != nil {
+					if err := json.Unmarshal([]byte(toolCall.FunctionCall.Arguments), &args); err != nil {
 						logger.Error("Unmarshal GetCurrentWeather failed", zap.Error(err))
 						continue
 					}
@@ -121,8 +118,8 @@ func ExecuteToolCalls(
 						Role: llms.ChatMessageTypeTool,
 						Parts: []llms.ContentPart{
 							llms.ToolCallResponse{
-								ToolCallID: currentToolID,
-								Name:       currentToolName,
+								ToolCallID: toolCall.ID,
+								Name:       toolCall.FunctionCall.Name,
 								Content:    response,
 							},
 						},
@@ -133,7 +130,7 @@ func ExecuteToolCalls(
 					var args struct {
 						Name string `json:"name"`
 					}
-					if err := json.Unmarshal([]byte(argsJSON), &args); err != nil {
+					if err := json.Unmarshal([]byte(toolCall.FunctionCall.Arguments), &args); err != nil {
 						logger.Error("Unmarshal GetCityPinyin failed", zap.Error(err))
 						continue
 					}
@@ -142,8 +139,8 @@ func ExecuteToolCalls(
 						Role: llms.ChatMessageTypeTool,
 						Parts: []llms.ContentPart{
 							llms.ToolCallResponse{
-								ToolCallID: currentToolID,
-								Name:       currentToolName,
+								ToolCallID: toolCall.ID,
+								Name:       toolCall.FunctionCall.Name,
 								Content:    response,
 							},
 						},
@@ -154,7 +151,7 @@ func ExecuteToolCalls(
 					var args struct {
 						Pinyin string `json:"pinyin"`
 					}
-					if err := json.Unmarshal([]byte(argsJSON), &args); err != nil {
+					if err := json.Unmarshal([]byte(toolCall.FunctionCall.Arguments), &args); err != nil {
 						logger.Error("Unmarshal GetCityIDs failed", zap.Error(err))
 						continue
 					}
@@ -167,8 +164,8 @@ func ExecuteToolCalls(
 						Role: llms.ChatMessageTypeTool,
 						Parts: []llms.ContentPart{
 							llms.ToolCallResponse{
-								ToolCallID: currentToolID,
-								Name:       currentToolName,
+								ToolCallID: toolCall.ID,
+								Name:       toolCall.FunctionCall.Name,
 								Content:    string(responseJSON),
 							},
 						},
@@ -176,7 +173,7 @@ func ExecuteToolCalls(
 					messageHistory = append(messageHistory, weatherCallResponse)
 
 				default:
-					logger.Warn("Unsupported tool", zap.String("tool", currentToolName))
+					logger.Warn("Unsupported tool", zap.String("tool", toolCall.FunctionCall.Name))
 				}
 			}
 		}
