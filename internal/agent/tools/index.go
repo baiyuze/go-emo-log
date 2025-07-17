@@ -66,15 +66,8 @@ func ExecuteToolCalls(
 	messageHistory []llms.MessageContent,
 	resp *llms.ContentResponse,
 	logger *zap.Logger) []llms.MessageContent {
-
-	// 维护一个累积器
-	//var currentToolName string
-	//var currentToolID string
-	//var argsBuilder strings.Builder
-
 	for _, choice := range resp.Choices {
 		for _, toolCall := range choice.ToolCalls {
-			// 记录 tool_call
 			assistantResponse := llms.MessageContent{
 				Role: llms.ChatMessageTypeAI,
 				Parts: []llms.ContentPart{
@@ -89,18 +82,7 @@ func ExecuteToolCalls(
 				},
 			}
 			messageHistory = append(messageHistory, assistantResponse)
-
-			//// 如果 Function 名字为空，表示是上一个函数的 continuation
-			//if toolCall.FunctionCall.Name != "" {
-			//	currentToolName = toolCall.FunctionCall.Name
-			//	currentToolID = toolCall.ID
-			//	argsBuilder.Reset()
-			//}
-			//argsBuilder.WriteString(toolCall.FunctionCall.Arguments)
-
-			// 当我们检测到 JSON 可能结束，才尝试 unmarshal
 			if strings.HasSuffix(toolCall.FunctionCall.Arguments, "}") {
-				//argsJSON := argsBuilder.String()
 				switch toolCall.FunctionCall.Name {
 				case "GetCurrentWeather":
 					var args struct {
@@ -175,6 +157,7 @@ func ExecuteToolCalls(
 				default:
 					logger.Warn("Unsupported tool", zap.String("tool", toolCall.FunctionCall.Name))
 				}
+
 			}
 		}
 	}
