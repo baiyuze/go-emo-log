@@ -66,7 +66,11 @@ func executeToolCalls(
 	if err != nil {
 		fmt.Println(err)
 	}
-	if len(resp.Choices[0].ToolCalls) > 0 {
+	if resp == nil || len(resp.Choices) == 0 {
+		logger.Warn("empty response or unmarshal failed")
+		return resp, messageHistory
+	}
+	if resp.Choices[0].ToolCalls != nil && len(resp.Choices[0].ToolCalls) > 0 {
 		messageHistory = tools.ExecuteToolCalls(messageHistory, resp, logger)
 		messageHistory = pushHistory(resp, messageHistory)
 
@@ -108,7 +112,7 @@ func executeToolStreamCalls(
 		logger.Warn("empty response or unmarshal failed")
 		return resp, messageHistory
 	}
-	if len(resp.Choices[0].ToolCalls) > 0 {
+	if resp.Choices[0].ToolCalls != nil && len(resp.Choices[0].ToolCalls) > 0 {
 		messageHistory = tools.ExecuteToolCalls(messageHistory, resp, logger)
 		messageHistory = pushHistory(resp, messageHistory)
 
@@ -144,7 +148,9 @@ func (s *aiService) TestChat(c *gin.Context, msg string) []*llms.ContentChoice {
 	}
 	ginContext = c
 	resp, _ := executeToolCalls(ctx, s.llm, messageHistory, logger)
-
+	if resp == nil {
+		return []*llms.ContentChoice{}
+	}
 	return resp.Choices
 }
 
