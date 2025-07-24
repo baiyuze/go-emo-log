@@ -51,12 +51,22 @@ func ProviderAiHandler(container *dig.Container) {
 // @Param data body model.Dict true "body"
 // @Router /api/ai/chat{id} [put]
 func (h *AiHandler) Chat(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")             // 允许所有域名访问
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS") // 允许的方法
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type") // 允许的请求头
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")     // 如果前端需要携带 Cookie 可设为 true
+	// 如果是预检请求，直接返回 200
+	if c.Request.Method == "OPTIONS" {
+		c.AbortWithStatus(200)
+		return
+	}
 	c.Writer.Header().Set("Content-Type", "text/event-stream")
 	c.Writer.Header().Set("Cache-Control", "no-cache")
 	c.Writer.Header().Set("Connection", "keep-alive")
 	msg := c.Query("msg")
 	if len(msg) == 0 {
 		errs.FailWithJSON(c, errors.New("msg不能为空"))
+		return
 	}
 	h.service.TestChat(c, msg)
 	c.Abort()
