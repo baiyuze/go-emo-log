@@ -42,6 +42,7 @@ func (s *feedbackService) Create(c *gin.Context, body *dto.Feedback) error {
 	data := model.Feedback{
 		Description: body.Description,
 		Version:     body.Version,
+		VersionId:   body.VersionId,
 	}
 	if err := s.db.Create(&data).Error; err != nil {
 		return err
