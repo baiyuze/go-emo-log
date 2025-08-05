@@ -124,6 +124,7 @@ func HandleQuery(pageNum string, pageSize string) dto.ListQuery {
 // GetLocalIP 获取本地IP
 func GetLocalIP() (string, error) {
 	addrs, err := net.InterfaceAddrs()
+
 	if err != nil {
 		return "", err
 	}
