@@ -14,7 +14,7 @@ type DevicesService interface {
 	Create(c *gin.Context, body *model.Device) error
 	Update(c *gin.Context, id uint64, body *model.Device) error
 	Delete(c *gin.Context, body dto.DeleteIds) error
-	List(context *gin.Context, query dto.ListQuery, userId uint64) (dto.Result[dto.List[model.Device]], error)
+	List(context *gin.Context, query dto.ListQuery) (dto.Result[dto.List[model.Device]], error)
 }
 
 type devicesService struct {
@@ -81,15 +81,13 @@ func (s *devicesService) Delete(c *gin.Context, body dto.DeleteIds) error {
 
 func (s *devicesService) List(
 	context *gin.Context,
-	query dto.ListQuery,
-	userId uint64) (dto.Result[dto.List[model.Device]], error) {
+	query dto.ListQuery) (dto.Result[dto.List[model.Device]], error) {
 	var devices []model.Device
 	limit := query.PageSize
 	offset := query.PageNum*query.PageSize - query.PageSize
 
 	if result := s.db.
 		Model(&model.Device{}).
-		Where("user_id = ?", userId).
 		Limit(limit).
 		Offset(offset).
 		Order("create_time asc").

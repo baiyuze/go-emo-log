@@ -313,7 +313,7 @@ definitions:
       version:
         type: string
       versionId:
-        type: string
+        type: integer
     type: object
   model.Permission:
     properties:
@@ -505,6 +505,21 @@ paths:
           $ref: '#/definitions/model.Dict'
       responses: {}
       summary: Device 更新数据
+      tags:
+      - 反馈数据管理
+  /api/ai/chat{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: ai 更新数据
       tags:
       - 反馈数据管理
   /api/department:
@@ -734,6 +749,49 @@ paths:
         schema:
           $ref: '#/definitions/model.Dict'
       responses: {}
+      summary: ai 删除数据
+      tags:
+      - 反馈数据管理
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: ai 更新emo数据
+      tags:
+      - 反馈数据管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
+      summary: ai 创建数据
+      tags:
+      - 反馈数据管理
+  /api/feedbacks/feedback:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Dict'
+      responses: {}
       summary: feedback 删除数据
       tags:
       - 反馈数据管理
@@ -765,7 +823,7 @@ paths:
       summary: feedback 创建数据
       tags:
       - 反馈数据管理
-  /api/feedbacks/{id}:
+  /api/feedbacks/feedback/{id}:
     put:
       consumes:
       - application/json

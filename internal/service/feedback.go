@@ -14,7 +14,7 @@ type FeedbackService interface {
 	Create(c *gin.Context, body *dto.Feedback) error
 	Update(c *gin.Context, id uint64, body *dto.Feedback) error
 	Delete(c *gin.Context, body dto.DeleteIds) error
-	List(context *gin.Context, query dto.ListQuery, userId uint64) (dto.Result[dto.List[model.Feedback]], error)
+	List(context *gin.Context, query dto.ListQuery) (dto.Result[dto.List[model.Feedback]], error)
 	//Update(c *gin.Context, id int, body *model.Dict) error
 	//GetOptionsByDictCode(c *gin.Context, code string) ([]*model.DictItem, error)
 }
@@ -73,8 +73,7 @@ func (s *feedbackService) Delete(c *gin.Context, body dto.DeleteIds) error {
 
 func (s *feedbackService) List(
 	context *gin.Context,
-	query dto.ListQuery,
-	userId uint64) (dto.Result[dto.List[model.Feedback]], error) {
+	query dto.ListQuery) (dto.Result[dto.List[model.Feedback]], error) {
 	var emotionLogs []model.Feedback
 	limit := query.PageSize
 	offset := query.PageNum*query.PageSize - query.PageSize

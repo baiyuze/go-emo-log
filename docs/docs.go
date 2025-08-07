@@ -103,6 +103,29 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/ai/chat{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "ai 更新数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/department": {
             "get": {
                 "consumes": [
@@ -444,6 +467,71 @@ const docTemplate = `{
                 "tags": [
                     "反馈数据管理"
                 ],
+                "summary": "ai 更新emo数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "ai 创建数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
+                "summary": "ai 删除数据",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Dict"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/feedbacks/feedback": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "反馈数据管理"
+                ],
                 "summary": "feedback 更新emo数据",
                 "parameters": [
                     {
@@ -501,7 +589,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/api/feedbacks/{id}": {
+        "/api/feedbacks/feedback/{id}": {
             "put": {
                 "consumes": [
                     "application/json"
@@ -1535,7 +1623,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "versionId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },

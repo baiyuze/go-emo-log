@@ -7,7 +7,6 @@ import (
 	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"emoLog/utils"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -69,17 +68,17 @@ func (h *EmoHandler) List(c *gin.Context) {
 	pageNum := c.Query("pageNum")
 	pageSize := c.Query("pageSize")
 	userId := c.Query("userId")
+	var id uint64
 
-	if len(userId) == 0 {
-		errs.FailWithJSON(c, errors.New("userId不能为空"))
-		return
+	if len(userId) != 0 {
+		var err error
+		id, err = strconv.ParseUint(userId, 10, 64)
+		if err != nil {
+			errs.FailWithJSON(c, err)
+			return
+		}
 	}
 
-	id, err := strconv.ParseUint(userId, 10, 64)
-	if err != nil {
-		errs.FailWithJSON(c, err)
-		return
-	}
 	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize), id)
 	if err != nil {
 		errs.FailWithJSON(c, err)

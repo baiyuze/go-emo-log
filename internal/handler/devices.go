@@ -8,7 +8,6 @@ import (
 	"emoLog/internal/model"
 	"emoLog/internal/service"
 	"emoLog/utils"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -70,19 +69,8 @@ func (h *DevicesHandler) Create(c *gin.Context) {
 func (h *DevicesHandler) List(c *gin.Context) {
 	pageNum := c.Query("pageNum")
 	pageSize := c.Query("pageSize")
-	userId := c.Query("userId")
 
-	if len(userId) == 0 {
-		errs.FailWithJSON(c, errors.New("userId不能为空"))
-		return
-	}
-
-	id, err := strconv.ParseUint(userId, 10, 64)
-	if err != nil {
-		errs.FailWithJSON(c, err)
-		return
-	}
-	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize), id)
+	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize))
 	if err != nil {
 		errs.FailWithJSON(c, err)
 		return

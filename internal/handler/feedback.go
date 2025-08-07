@@ -7,7 +7,7 @@ import (
 	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"emoLog/utils"
-	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -44,7 +44,7 @@ func ProviderFeedbackHandler(container *dig.Container) {
 // @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/feedbacks [post]
+// @Router /api/feedbacks/feedback [post]
 func (h *FeedbackHandler) Create(c *gin.Context) {
 
 	var body dto.Feedback
@@ -65,23 +65,14 @@ func (h *FeedbackHandler) Create(c *gin.Context) {
 // @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/feedbacks [get]
+// @Router /api/feedbacks/feedback  [get]
 func (h *FeedbackHandler) List(c *gin.Context) {
 	pageNum := c.Query("pageNum")
 	pageSize := c.Query("pageSize")
-	userId := c.Query("userId")
 
-	if len(userId) == 0 {
-		errs.FailWithJSON(c, errors.New("userId不能为空"))
-		return
-	}
+	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize))
 
-	id, err := strconv.ParseUint(userId, 10, 64)
-	if err != nil {
-		errs.FailWithJSON(c, err)
-		return
-	}
-	result, err := h.service.List(c, utils.HandleQuery(pageNum, pageSize), id)
+	fmt.Println(result)
 	if err != nil {
 		errs.FailWithJSON(c, err)
 		return
@@ -94,7 +85,7 @@ func (h *FeedbackHandler) List(c *gin.Context) {
 // @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/feedbacks/{id} [put]
+// @Router /api/feedbacks/feedback/{id} [put]
 func (h *FeedbackHandler) Update(c *gin.Context) {
 	queryId := c.Param("id")
 	var body dto.Feedback
@@ -124,7 +115,7 @@ func (h *FeedbackHandler) Update(c *gin.Context) {
 // @Tags 反馈数据管理
 // @Accept  json
 // @Param data body model.Dict true "body"
-// @Router /api/feedbacks [delete]
+// @Router /api/feedbacks/feedback [delete]
 func (h *FeedbackHandler) Delete(c *gin.Context) {
 	var body dto.DeleteIds
 	if err := c.ShouldBindJSON(&body); err != nil {

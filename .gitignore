@@ -30,3 +30,4 @@ components.d.ts
 tmp/*
 tmp/build-errors.log
 bin/
+__debug*
