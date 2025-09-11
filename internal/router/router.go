@@ -21,7 +21,7 @@ func RegisterRoutes(r *gin.Engine, container *dig.Container) {
 		c.JSON(http.StatusNotFound, dto.Fail(http.StatusNotFound, c.Request.RequestURI+"：接口不存在"))
 	})
 	RegisterUserRoutes(route, container)
-	RegisterRpcRoutes(route, container)
+	// RegisterRpcRoutes(route, container)
 	RegisterRolesRoutes(route, container)
 	RegisterPermissionsRoutes(route, container)
 	RegisterDepartmentRoutes(route, container)
@@ -30,6 +30,6 @@ func RegisterRoutes(r *gin.Engine, container *dig.Container) {
 	RegisterVersionRoutes(route, container)
 	RegisterFeedbackRoutes(route, container)
 	RegisterDevicesRoutes(route, container)
-	RegisterAiRoutes(route, container)
+	// RegisterAiRoutes(route, container)
 
 }

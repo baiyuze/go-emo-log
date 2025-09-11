@@ -4,32 +4,29 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/model"
 	"emoLog/internal/service"
 	"emoLog/utils"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/dig"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/dig"
 )
 
 type VersionHandler struct {
 	service service.VersionService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 }
 
 func NewVersionHandler(
 	s service.VersionService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 ) *VersionHandler {
 	return &VersionHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 	}
 }
 

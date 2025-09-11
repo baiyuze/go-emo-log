@@ -4,7 +4,6 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"emoLog/utils"
 	"net/http"
@@ -17,18 +16,15 @@ import (
 type EmoHandler struct {
 	service service.EmoService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 }
 
 func NewEmoHandler(
 	s service.EmoService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 ) *EmoHandler {
 	return &EmoHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 	}
 }
 

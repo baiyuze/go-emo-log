@@ -4,29 +4,26 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/dig"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/dig"
 )
 
 type DepartmentHandler struct {
 	service service.DepartmentService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 }
 
 func NewDepartmentHandler(
 	s service.DepartmentService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 ) *DepartmentHandler {
 	return &DepartmentHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 	}
 }
 

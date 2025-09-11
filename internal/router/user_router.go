@@ -14,7 +14,7 @@ func RegisterUserRoutes(r *gin.RouterGroup, container *dig.Container) {
 
 	router := r.Group("users")
 
-	err := container.Invoke(func(userHandler *handler.UserHandler, rpcHandler *handler.RpcHandler) {
+	err := container.Invoke(func(userHandler *handler.UserHandler) {
 		// 登录
 		router.POST("/login", middleware.Jwt(false), userHandler.Login)
 		//注册

@@ -4,7 +4,6 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"emoLog/utils"
 	"fmt"
@@ -18,18 +17,15 @@ import (
 type FeedbackHandler struct {
 	service service.FeedbackService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 }
 
 func NewFeedbackHandlerHandler(
 	s service.FeedbackService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 ) *FeedbackHandler {
 	return &FeedbackHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 	}
 }
 

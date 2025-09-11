@@ -4,7 +4,8 @@ import (
 	_ "emoLog/docs"
 	"emoLog/internal/common/log"
 	"emoLog/internal/di"
-	server "emoLog/internal/grpc"
+
+	// server "emoLog/internal/grpc"
 	"emoLog/internal/middleware"
 	"emoLog/internal/router"
 	"fmt"
@@ -47,7 +48,7 @@ func main() {
 
 	container := di.NewContainer()
 	// 初始化grpc服务
-	go server.IntServer(container)
+	// go server.IntServer(container)
 
 	router.RegisterRoutes(r, container)
 	// 运行服务器

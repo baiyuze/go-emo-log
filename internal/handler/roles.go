@@ -4,30 +4,27 @@ import (
 	errs "emoLog/internal/common/error"
 	log "emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/model"
 	"emoLog/internal/service"
 	"emoLog/utils"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/dig"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/dig"
 )
 
 type RolesHandler struct {
 	service service.RolesService
-	clients *container.Clients
 	log     *log.LoggerWithContext
 }
 
 func NewRolesHandler(
 	service service.RolesService,
-	clients *container.Clients,
 	log *log.LoggerWithContext,
 ) *RolesHandler {
 	return &RolesHandler{
 		service: service,
-		clients: clients,
 		log:     log,
 	}
 }

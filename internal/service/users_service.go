@@ -63,21 +63,21 @@ func (s *userService) Login(c *gin.Context, body dto.LoginBody) dto.Result[dto.L
 	hashPsd := hex.EncodeToString(psd[:])
 	if user.Account == body.Account && hashPsd == *user.Password {
 		// 调用jwt
-		//两小时过期
-		sign, err := jwt.Auth(user, time.Now().Add(2*time.Hour).Unix())
+		//30天过期
+		sign, err := jwt.Auth(user, time.Now().Add(24*30*time.Hour).Unix())
 		if err != nil {
 			return dto.ServiceFail[dto.LoginResult](err)
 		}
 		//7天过期
-		refreshToken, err := jwt.Auth(user,
-			time.Now().Add(24*7*time.Hour).Unix())
-		if err != nil {
-			return dto.ServiceFail[dto.LoginResult](err)
-		}
+		// refreshToken, err := jwt.Auth(user,
+		// 	time.Now().Add(24*60*time.Hour).Unix())
+		// if err != nil {
+		// 	return dto.ServiceFail[dto.LoginResult](err)
+		// }
 
 		return dto.ServiceSuccess(dto.LoginResult{
-			Token:        sign,
-			RefreshToken: refreshToken,
+			Token: sign,
+			// RefreshToken: refreshToken,
 			UserInfo: &dto.UserInfo{
 				Account: user.Account,
 				Name:    user.Name,

@@ -2,9 +2,7 @@ package di
 
 import (
 	"emoLog/config"
-	"emoLog/internal/agent"
 	"emoLog/internal/common/log"
-	grpcContainer "emoLog/internal/grpc/container"
 	"emoLog/internal/handler"
 	"emoLog/internal/repo"
 	"emoLog/internal/service"
@@ -25,7 +23,7 @@ func NewContainer() *dig.Container {
 	// 公共日志管理器
 	log.NewProvideLogger(container)
 	// 获取客户端grpc
-	grpcContainer.NewProvideClients(container)
+	// grpcContainer.NewProvideClients(container)
 	// 配置
 	config.ProvideConfig(container)
 	// 数据库
@@ -35,7 +33,7 @@ func NewContainer() *dig.Container {
 	// controller
 	handler.Provide(container)
 
-	agent.ProvideAi(container)
+	// agent.ProvideAi(container)
 
 	return container
 }

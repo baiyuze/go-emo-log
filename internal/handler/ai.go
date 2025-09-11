@@ -4,7 +4,6 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"emoLog/utils"
 	"errors"
@@ -19,21 +18,18 @@ import (
 type AiHandler struct {
 	service service.AiService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 	llm     *openai.LLM
 }
 
 func NewAiHandlerHandler(
 	s service.AiService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 	llm *openai.LLM,
 
 ) *AiHandler {
 	return &AiHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 		llm:     llm,
 	}
 }

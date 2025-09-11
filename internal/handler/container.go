@@ -4,7 +4,7 @@ import "go.uber.org/dig"
 
 func Provide(container *dig.Container) {
 	ProviderUserHandler(container)
-	ProviderRpcHandler(container)
+	// ProviderRpcHandler(container)
 	ProviderRolesHandler(container)
 	ProviderPermissionsHandler(container)
 	ProviderDepartmentHandler(container)
@@ -13,5 +13,5 @@ func Provide(container *dig.Container) {
 	ProviderVersionHandler(container)
 	ProviderFeedbackHandler(container)
 	ProviderDevicesHandler(container)
-	ProviderAiHandler(container)
+	// ProviderAiHandler(container)
 }

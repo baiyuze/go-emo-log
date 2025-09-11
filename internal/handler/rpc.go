@@ -2,11 +2,7 @@ package handler
 
 import (
 	log "emoLog/internal/common/log"
-	"emoLog/internal/grpc/client"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
-	"fmt"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
@@ -14,18 +10,15 @@ import (
 
 type RpcHandler struct {
 	service service.UserService
-	clients *container.Clients
 	log     *log.LoggerWithContext
 }
 
 func NewRpcHandler(
 	service service.UserService,
-	clients *container.Clients,
 	log *log.LoggerWithContext,
 ) *RpcHandler {
 	return &RpcHandler{
 		service: service,
-		clients: clients,
 		log:     log,
 	}
 }
@@ -44,11 +37,11 @@ func ProviderRpcHandler(container *dig.Container) {
 // @Router /api/rpc/test [get]
 func (h *RpcHandler) TestRpc(c *gin.Context) {
 
-	userValid, err := client.SayHello(h.clients)
-	if err != nil {
-		fmt.Println("查询失败:", err.Error())
-	} else {
-		fmt.Printf("查询数据: %+v\n", userValid)
-	}
-	c.JSON(http.StatusOK, userValid)
+	// userValid, err := client.SayHello(h.clients)
+	// if err != nil {
+	// 	fmt.Println("查询失败:", err.Error())
+	// } else {
+	// 	fmt.Printf("查询数据: %+v\n", userValid)
+	// }
+	// c.JSON(http.StatusOK, userValid)
 }

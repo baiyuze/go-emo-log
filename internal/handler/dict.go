@@ -4,31 +4,28 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/model"
 	"emoLog/internal/service"
 	"emoLog/utils"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/dig"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/dig"
 )
 
 type DictHandler struct {
 	service service.DictService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 }
 
 func NewDictHandler(
 	s service.DictService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 ) *DictHandler {
 	return &DictHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 	}
 }
 

@@ -4,30 +4,27 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"emoLog/utils"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/dig"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/dig"
 )
 
 type PermissionsHandler struct {
 	service service.PermissionsService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 }
 
 func NewPermissionsHandler(
 	s service.PermissionsService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 ) *PermissionsHandler {
 	return &PermissionsHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 	}
 }
 

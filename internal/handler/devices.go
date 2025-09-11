@@ -4,7 +4,6 @@ import (
 	errs "emoLog/internal/common/error"
 	"emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/model"
 	"emoLog/internal/service"
 	"emoLog/utils"
@@ -18,18 +17,15 @@ import (
 type DevicesHandler struct {
 	service service.DevicesService
 	log     *log.LoggerWithContext
-	clients *container.Clients
 }
 
 func NewDevicesHandlerHandler(
 	s service.DevicesService,
 	l *log.LoggerWithContext,
-	clients *container.Clients,
 ) *DevicesHandler {
 	return &DevicesHandler{
 		service: s,
 		log:     l,
-		clients: clients,
 	}
 }
 

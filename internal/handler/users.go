@@ -4,29 +4,26 @@ import (
 	errs "emoLog/internal/common/error"
 	log "emoLog/internal/common/log"
 	"emoLog/internal/dto"
-	"emoLog/internal/grpc/container"
 	"emoLog/internal/service"
 	"emoLog/utils"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/dig"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/dig"
 )
 
 type UserHandler struct {
 	service service.UserService
-	clients *container.Clients
 	log     *log.LoggerWithContext
 }
 
 func NewUserHandler(
 	service service.UserService,
-	clients *container.Clients,
 	log *log.LoggerWithContext,
 ) *UserHandler {
 	return &UserHandler{
 		service: service,
-		clients: clients,
 		log:     log,
 	}
 }
