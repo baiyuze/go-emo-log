@@ -15,11 +15,11 @@ func RegisterVersionRoutes(r *gin.RouterGroup, container *dig.Container) {
 	router := r.Group("versions")
 	err := container.Invoke(func(versionHandler *handler.VersionHandler) {
 		// 获取版本列表
-		router.GET("/", middleware.Jwt(true), versionHandler.List)
+		router.GET("/", middleware.Jwt(false), versionHandler.List)
 		// 数据同步
 		router.GET("/dataSync", middleware.Jwt(true), versionHandler.List)
 		// 检查更新
-		router.GET("/:versionName", middleware.Jwt(true), versionHandler.CheckUpdate)
+		router.GET("/:versionName", middleware.Jwt(false), versionHandler.CheckUpdate)
 		// 创建版本
 		router.POST("/", middleware.Jwt(true), versionHandler.Create)
 		// 用户反馈

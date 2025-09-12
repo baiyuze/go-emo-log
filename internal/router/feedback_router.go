@@ -15,7 +15,7 @@ func RegisterFeedbackRoutes(r *gin.RouterGroup, container *dig.Container) {
 	router := r.Group("feedbacks")
 	err := container.Invoke(func(feedbackHandler *handler.FeedbackHandler) {
 		// 创建
-		router.POST("/feedback", middleware.Jwt(true), feedbackHandler.Create)
+		router.POST("/feedback", middleware.Jwt(false), feedbackHandler.Create)
 		// 更新
 		router.PUT("/feedback/:id", middleware.Jwt(true), feedbackHandler.Update)
 		// 删除
